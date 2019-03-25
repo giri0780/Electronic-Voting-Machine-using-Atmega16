@@ -1,0 +1,16 @@
+There are three external interrupts that we can program using Atmega16. These Pins are PIND0(PIN16), PIND1(PIN17), PINB2(PIN3). Here we are going to learn how to activate each interrupt and how to write ISR(Interrupt Service Routine).
+
+So, there are various registers for setting up the Interrupts. These are:
+**************************************************************************
+
+1.MCUCR (MCU Control register)
+    The bits-ISC11, ISC10, ISC01, ISC00 are used set the triggering of the particular interrupt. That means at which part of the signal, it should trigger the ISR. From these 4 bits we can only select the triggering method for INT0, INT1.
+2.MCUSR (MCU Control and Status Register)
+    You may have noticed that in the first register, the INT2 interrupt is not mentioned. Well, that’s because we are going to control it from this register. INT2 is edge triggered only. Setting the ISC2 bit is going to activate it in edge-triggered mode.
+3.GICR  (General Interrupt Control Register)
+    This register mask/unmask the external interrupts. Setting the bits ‘1’ means you are activating the particular interrupt.
+    
+Note
+******
+For more detail study about External Hardware Interrupts in ATMEGA16.
+    
