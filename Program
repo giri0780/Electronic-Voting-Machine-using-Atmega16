@@ -1,0 +1,79 @@
+#include <avr/io.h>
+#include <avr/interrupt.h>
+#include <util/delay.h>
+#include <string.h>
+#define F_CPU 4000000UL
+char i=0,j=0,m=0,n=1;
+char D[8]="        ";
+	ISR(INT0_vect)
+	{_delay_ms(1000);
+		m=m+1;
+	}
+	ISR(INT1_vect)
+	{
+		_delay_ms(1000);
+		j=j+1;
+	}
+	ISR(INT2_vect)
+	{
+		_delay_ms(1000);
+		n=n+1;
+	}
+
+int main(void)
+ {  
+      DDRC=0xff;
+	  DDRA=0xff;
+	 GICR=(1<<INT0)|(1<<INT1)|(1<<INT2);
+	 MCUCR=((1<<ISC01)|(1<<ISC00)|(1<<ISC11)|(1<<ISC10));
+         MCUCSR=(1<<ISC2);
+	sei();
+	LCDcmd(0x01);
+	LCDcmd(0x0c);
+	LCDcmd(0x38);
+	LCDcmd(0x06);
+	LCDcmd(0x80);
+    while(1)
+    {
+		
+		sprintf(D,"Bhanu-%d",m);
+		LCDGoto(0,0);
+		LCDdisplay(D);
+		sprintf(D,"Ankur-%d",j);
+		LCDGoto(0,1);
+	        LCDdisplay(D);
+       		sprintf(D,"Shukla-%d",n);
+		LCDGoto(8,0);
+	        LCDdisplay(D);
+
+    }
+}
+void LCDcmd(char k)
+{
+	PORTA=k;
+	PORTC=0x01;
+	_delay_ms(200);
+	PORTC=0x00;
+}
+void LCDdisplay(char a[])
+{
+	for(i = 0; i <strlen(a) ; i++ )
+	{
+		PORTA = a[i];
+		PORTC = 0x05;
+		_delay_ms(200);
+		PORTC = 0x04;
+	}
+}
+void LCDGoto(char x, char y)
+{char add;
+	char c=0x00;
+	char b=0x40;
+	switch(y)
+	{
+		case 0: add = c+x;break;
+		case 1: add = b+x;break;
+	}
+	char addcmd=(0x80|add);
+	LCDcmd(addcmd);
+}
